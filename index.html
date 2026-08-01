@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W. Small — Senior Data Analyst | Bellabeat Wellness Study</title>
+<meta name="description" content="A senior data analyst portfolio exploring activity and sleep patterns in the Bellabeat wellness dataset.">
+<style>
+  /* =========================================================
+     TOKENS
+  ========================================================= */
+  :root{
+    --ivory:      #F6EEE1;
+    --ivory-2:    #EFE3D0;
+    --plum:       #2B1420;
+    --plum-2:     #3E1F30;
+    --rosegold:   #C79082;
+    --rosegold-d: #9C6559;
+    --gold:       #B6924F;
+    --gold-light: #E4C88B;
+    --blush:      #EEDCD1;
+    --line:       #D8C3AA;
+    --ink:        #2B1420;
+    --ink-soft:   #5B4A50;
+
+    --font-display: "Copperplate", "Copperplate Gothic Light", "Bahnschrift", "Trebuchet MS", sans-serif;
+    --font-body:    Georgia, "Palatino Linotype", "Book Antiqua", Palatino, serif;
+
+    --maxw: 1100px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  ::selection{background:var(--gold-light);}
+
+  h1,h2,h3,.eyebrow,.nav-brand,.btn,.chip{
+    font-family:var(--font-display);
+    letter-spacing:0.08em;
+  }
+
+  h2{
+    font-size:clamp(1.6rem,3vw,2.4rem);
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--plum);
+    margin:0 0 0.3em;
+  }
+  .lede{
+    font-family:var(--font-body);
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+    max-width:640px;
+  }
+  .eyebrow{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.25em;
+    color:var(--rosegold-d);
+    margin:0 0 0.8em;
+  }
+
+  section{padding:5.5rem 1.5rem;}
+  .wrap{max-width:var(--maxw);margin:0 auto;}
+
+  /* =========================================================
+     DECO ORNAMENTS
+  ========================================================= */
+  .fan-divider{
+    display:flex;justify-content:center;align-items:center;
+    padding:0.5rem 0 1.5rem;
+  }
+  .fan-divider svg{width:120px;height:36px;}
+
+  .corner-frame{position:relative;}
+  .corner-frame svg.corner{
+    position:absolute;width:26px;height:26px;
+    stroke:var(--gold);fill:none;stroke-width:1.4;
+  }
+  .corner-frame .c-tl{top:-1px;left:-1px;}
+  .corner-frame .c-tr{top:-1px;right:-1px;transform:scaleX(-1);}
+  .corner-frame .c-bl{bottom:-1px;left:-1px;transform:scaleY(-1);}
+  .corner-frame .c-br{bottom:-1px;right:-1px;transform:scale(-1,-1);}
+
+  /* =========================================================
+     NAV
+  ========================================================= */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(246,238,225,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0.9rem 1.5rem;
+  }
+  .nav-brand{
+    display:flex;align-items:center;gap:0.6rem;
+    font-size:0.85rem;text-transform:uppercase;color:var(--plum);
+    text-decoration:none;
+  }
+  .nav-brand .mono{
+    width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.72rem;color:var(--gold-light);
+    background:var(--plum);
+  }
+  nav.links{display:flex;gap:1.8rem;}
+  nav.links a{
+    font-size:0.72rem;text-transform:uppercase;letter-spacing:0.18em;
+    text-decoration:none;color:var(--ink-soft);
+    position:relative;padding-bottom:4px;
+  }
+  nav.links a::after{
+    content:"";position:absolute;left:0;bottom:0;width:0%;height:1px;
+    background:var(--gold);transition:width 0.35s ease;
+  }
+  nav.links a:hover::after{width:100%;}
+  .nav-toggle{display:none;background:none;border:1px solid var(--gold);color:var(--plum);width:38px;height:38px;border-radius:2px;font-size:1rem;cursor:pointer;}
+
+  /* =========================================================
+     HERO
+  ========================================================= */
+  .hero{
+    position:relative;
+    background:radial-gradient(circle at 50% 30%, var(--plum-2) 0%, var(--plum) 68%);
+    color:var(--ivory);
+    padding:6rem 1.5rem 5rem;
+    overflow:hidden;
+    text-align:center;
+  }
+  .hero .rays{
+    position:absolute;inset:0;margin:auto;
+    width:min(900px,140vw);height:min(900px,140vw);
+    left:50%;top:46%;transform:translate(-50%,-50%);
+    opacity:0.55;
+    pointer-events:none;
+  }
+  .hero-content{position:relative;z-index:2;}
+  .medallion{
+    width:150px;height:150px;margin:0 auto 1.6rem;
+    position:relative;
+  }
+  .hero .eyebrow{color:var(--gold-light);}
+  .hero h1{
+    font-size:clamp(2.1rem,5vw,3.4rem);
+    text-transform:uppercase;
+    margin:0.2em 0 0.5em;
+    letter-spacing:0.06em;
+    font-weight:400;
+  }
+  .hero h1 span{display:block;font-size:0.42em;letter-spacing:0.35em;color:var(--rosegold);margin-top:0.6em;}
+  .hero p.lede{
+    color:var(--blush);margin:0 auto 2.2rem;font-size:1.08rem;
+  }
+  .hero-stats{
+    display:flex;justify-content:center;gap:2.6rem;flex-wrap:wrap;
+    margin-top:2.6rem;
+  }
+  .hero-stats div{text-align:center;}
+  .hero-stats .num{
+    font-family:var(--font-display);font-size:1.8rem;color:var(--gold-light);
+    display:block;
+  }
+  .hero-stats .cap{
+    font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--rosegold);
+  }
+
+  .btn{
+    display:inline-block;padding:0.85rem 2rem;
+    border:1px solid var(--gold);
+    color:var(--gold-light);
+    text-decoration:none;
+    font-size:0.72rem;text-transform:uppercase;letter-spacing:0.2em;
+    transition:background 0.3s ease,color 0.3s ease;
+    background:transparent;
+  }
+  .btn:hover{background:var(--gold);color:var(--plum);}
+  .btn.dark{border-color:var(--plum);color:var(--plum);}
+  .btn.dark:hover{background:var(--plum);color:var(--ivory);}
+
+  /* =========================================================
+     ABOUT / CASE STUDY
+  ========================================================= */
+  .about{background:var(--ivory);}
+  .about-grid{
+    display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:start;
+  }
+  .about-grid p{color:var(--ink-soft);}
+  .stat-card{
+    border:1px solid var(--line);
+    padding:1.6rem;
+    background:var(--blush);
+    text-align:center;
+  }
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .stat-card .num{
+    font-family:var(--font-display);font-size:1.9rem;color:var(--rosegold-d);display:block;
+  }
+  .stat-card .cap{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-soft);}
+
+  /* =========================================================
+     INSIGHTS
+  ========================================================= */
+  .insights{background:var(--plum);color:var(--ivory);}
+  .insights h2{color:var(--ivory);}
+  .insights .lede{color:var(--blush);}
+  .insight-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-top:3rem;
+  }
+  .insight-card{
+    background:var(--plum-2);
+    border:1px solid rgba(230,196,150,0.35);
+    padding:2rem 1.6rem 1.8rem;
+    position:relative;
+  }
+  .insight-card .roman{
+    font-family:var(--font-display);font-size:0.85rem;color:var(--gold);
+    letter-spacing:0.2em;margin-bottom:0.8rem;display:block;
+  }
+  .insight-card h3{
+    font-family:var(--font-body);font-style:italic;font-weight:400;
+    font-size:1.15rem;color:var(--gold-light);margin:0 0 0.7rem;
+    letter-spacing:0.01em;
+  }
+  .insight-card p{font-size:0.92rem;color:var(--blush);margin:0 0 1.2rem;}
+  .ring-wrap{display:flex;justify-content:center;margin-bottom:1.2rem;}
+  .ring-label{
+    text-align:center;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--rosegold);
+  }
+  .ring svg{width:120px;height:120px;}
+  .ring-num{
+    font-family:var(--font-display);font-size:1.05rem;fill:var(--gold-light);
+  }
+
+  /* =========================================================
+     DATA GAPS
+  ========================================================= */
+  .gaps{background:var(--ivory-2);}
+  .gap-list{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2.6rem;
+  }
+  .gap-item{
+    display:flex;gap:1rem;
+    padding:1.3rem 1.4rem;
+    background:var(--ivory);
+    border-left:2px solid var(--gold);
+  }
+  .gap-item svg{flex-shrink:0;width:22px;height:22px;margin-top:2px;}
+  .gap-item h4{
+    margin:0 0 0.35rem;font-family:var(--font-display);font-size:0.82rem;
+    letter-spacing:0.08em;text-transform:uppercase;color:var(--plum);
+  }
+  .gap-item p{margin:0;font-size:0.9rem;color:var(--ink-soft);}
+
+  /* =========================================================
+     PREDICTIONS
+  ========================================================= */
+  .predictions{background:var(--ivory);}
+  .predict-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem;margin-top:2.8rem;
+  }
+  .predict-card{
+    border:1px solid var(--line);
+    padding:2rem 1.6rem;
+    text-align:center;
+    background:var(--ivory);
+    transition:transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .predict-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px -18px rgba(43,20,32,0.35);}
+  .predict-card svg{width:52px;height:52px;margin-bottom:1rem;}
+  .predict-card h4{
+    font-family:var(--font-body);font-style:italic;font-weight:400;
+    font-size:1.05rem;color:var(--plum);margin:0 0 0.6rem;
+  }
+  .predict-card p{font-size:0.88rem;color:var(--ink-soft);margin:0;}
+  .predict-card .tag{
+    display:inline-block;margin-bottom:0.9rem;
+    font-size:0.64rem;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--rosegold-d);
+  }
+
+  /* =========================================================
+     TOOLKIT
+  ========================================================= */
+  .toolkit{background:var(--blush);}
+  .chip-row{display:flex;flex-wrap:wrap;gap:0.8rem;margin-top:2rem;justify-content:center;}
+  .chip{
+    border:1px solid var(--gold);
+    padding:0.55rem 1.3rem;
+    font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;
+    color:var(--plum);background:var(--ivory);
+  }
+
+  /* =========================================================
+     CONTACT / FOOTER
+  ========================================================= */
+  footer{
+    background:var(--plum);color:var(--blush);
+    padding:4.5rem 1.5rem 2.5rem;text-align:center;
+  }
+  footer h2{color:var(--ivory);}
+  footer .lede{color:var(--rosegold);margin:0 auto 2rem;}
+  .footer-links{display:flex;gap:2rem;justify-content:center;margin:2rem 0;flex-wrap:wrap;}
+  .footer-links a{
+    text-decoration:none;color:var(--gold-light);
+    font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;
+    border-bottom:1px solid transparent;
+  }
+  .footer-links a:hover{border-color:var(--gold-light);}
+  .fine{font-size:0.72rem;color:var(--ink-soft);opacity:0.7;margin-top:2.5rem;}
+
+  /* =========================================================
+     REVEAL ON SCROLL
+  ========================================================= */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{transition:none;opacity:1;transform:none;}
+    .predict-card{transition:none;}
+  }
+
+  /* =========================================================
+     RESPONSIVE
+  ========================================================= */
+  @media (max-width:860px){
+    .about-grid{grid-template-columns:1fr;}
+    .insight-grid{grid-template-columns:1fr;}
+    .predict-grid{grid-template-columns:1fr;}
+    .gap-list{grid-template-columns:1fr;}
+  }
+  @media (max-width:700px){
+    nav.links{
+      position:absolute;top:100%;left:0;right:0;
+      flex-direction:column;background:var(--ivory);
+      border-bottom:1px solid var(--line);
+      padding:1rem 1.5rem;gap:1rem;
+      display:none;
+    }
+    nav.links.open{display:flex;}
+    .nav-toggle{display:block;}
+  }
+  @media (max-width:480px){
+    .hero-stats{gap:1.6rem;}
+    section{padding:4rem 1.1rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     NAV
+========================================================= -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-brand">
+      <span class="mono">W·S</span> W. Small — Data Analyst
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+    <nav class="links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#insights">Insights</a>
+      <a href="#gaps">Data Gaps</a>
+      <a href="#predictions">Forecast</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="hero" id="top">
+  <svg class="rays" viewBox="0 0 400 400" aria-hidden="true">
+    <g stroke="#E4C88B" stroke-width="1" opacity="0.5">
+      <!-- 24 radiating lines -->
+      <line x1="200" y1="200" x2="200" y2="10"/>
+      <line x1="200" y1="200" x2="284" y2="16"/>
+      <line x1="200" y1="200" x2="358" y2="58"/>
+      <line x1="200" y1="200" x2="390" y2="130"/>
+      <line x1="200" y1="200" x2="390" y2="200"/>
+      <line x1="200" y1="200" x2="390" y2="270"/>
+      <line x1="200" y1="200" x2="358" y2="342"/>
+      <line x1="200" y1="200" x2="284" y2="384"/>
+      <line x1="200" y1="200" x2="200" y2="390"/>
+      <line x1="200" y1="200" x2="116" y2="384"/>
+      <line x1="200" y1="200" x2="42" y2="342"/>
+      <line x1="200" y1="200" x2="10" y2="270"/>
+      <line x1="200" y1="200" x2="10" y2="130"/>
+      <line x1="200" y1="200" x2="42" y2="58"/>
+      <line x1="200" y1="200" x2="116" y2="16"/>
+    </g>
+    <circle cx="200" cy="200" r="120" fill="none" stroke="#C79082" stroke-width="0.75" opacity="0.55"/>
+    <circle cx="200" cy="200" r="150" fill="none" stroke="#B6924F" stroke-width="0.5" opacity="0.4"/>
+  </svg>
+
+  <div class="hero-content">
+    <div class="medallion">
+      <svg viewBox="0 0 150 150" aria-hidden="true">
+        <circle cx="75" cy="75" r="72" fill="none" stroke="#B6924F" stroke-width="1.5"/>
+        <circle cx="75" cy="75" r="60" fill="none" stroke="#C79082" stroke-width="1"/>
+        <g stroke="#E4C88B" stroke-width="1">
+          <line x1="75" y1="15" x2="75" y2="3"/>
+          <line x1="122" y1="28" x2="130" y2="18"/>
+          <line x1="135" y1="75" x2="147" y2="75"/>
+          <line x1="122" y1="122" x2="130" y2="132"/>
+          <line x1="75" y1="135" x2="75" y2="147"/>
+          <line x1="28" y1="122" x2="18" y2="132"/>
+          <line x1="15" y1="75" x2="3" y2="75"/>
+          <line x1="28" y1="28" x2="18" y2="18"/>
+        </g>
+        <text x="75" y="83" text-anchor="middle" font-family="Copperplate, 'Trebuchet MS', sans-serif" font-size="30" letter-spacing="2" fill="#E4C88B">W·S</text>
+      </svg>
+    </div>
+    <p class="eyebrow">Senior Data Analyst</p>
+    <h1>Reading the Rhythms<br>of Wellness Data<span>A Bellabeat activity &amp; sleep study</span></h1>
+    <p class="lede">Thirty-five wearable users. Two source tables. One question — where does the story of daily wellness actually live in the numbers, and where is it still hiding?</p>
+    <a href="#insights" class="btn">View the Findings</a>
+
+    <div class="hero-stats">
+      <div><span class="num">35</span><span class="cap">Members Tracked</span></div>
+      <div><span class="num">6,538</span><span class="cap">Avg. Daily Steps</span></div>
+      <div><span class="num">82.8%</span><span class="cap">Time Sedentary</span></div>
+      <div><span class="num">68.6%</span><span class="cap">Logged Sleep</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     ABOUT / CASE STUDY
+========================================================= -->
+<section class="about" id="about">
+  <div class="wrap">
+    <p class="eyebrow reveal">The Case Study</p>
+    <h2 class="reveal">Behind the Bellabeat Dataset</h2>
+    <div class="fan-divider reveal">
+      <svg viewBox="0 0 120 36" aria-hidden="true"><g stroke="#B6924F" stroke-width="1" fill="none"><path d="M60 34 L20 4"/><path d="M60 34 L40 2"/><path d="M60 34 L60 0"/><path d="M60 34 L80 2"/><path d="M60 34 L100 4"/></g></svg>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p>Bellabeat designs wellness technology for women — trackers, jewelry, and an app that turns daily biometrics into guidance a person can act on. This study works from an anonymized export of thirty-five wearable users, with per-member activity totals joined against sleep logs on a shared member ID.</p>
+        <p>Every figure on this page is pulled directly from that join: daily step and distance averages, active-minute breakdowns, calories, and — for the members who logged it — minutes asleep versus minutes simply lying in bed. My job was to clean it, question it, and ask what it does and doesn't tell Bellabeat's product team about the women using their devices.</p>
+        <a href="#insights" class="btn dark">Read the Three Key Insights</a>
+      </div>
+      <div class="reveal">
+        <div class="stat-grid">
+          <div class="stat-card"><span class="num">13</span><span class="cap">Avg. Days Tracked</span></div>
+          <div class="stat-card"><span class="num">24 / 35</span><span class="cap">Have Sleep Logs</span></div>
+          <div class="stat-card"><span class="num">91.2%</span><span class="cap">Sleep Efficiency</span></div>
+          <div class="stat-card"><span class="num">14</span><span class="cap">Members w/ a Zero-Step Day</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     INSIGHTS
+========================================================= -->
+<section class="insights" id="insights">
+  <div class="wrap">
+    <p class="eyebrow reveal">Three Key Insights</p>
+    <h2 class="reveal">What the Numbers Say</h2>
+    <p class="lede reveal">Three findings, drawn straight from the combined activity-and-sleep table, that Bellabeat's product and marketing teams could act on this quarter.</p>
+
+    <div class="insight-grid">
+
+      <div class="insight-card reveal">
+        <span class="roman">I.</span>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#4A2436" stroke-width="10"/>
+              <circle class="ring-fill" data-pct="82.8" cx="60" cy="60" r="50" fill="none" stroke="#C79082" stroke-width="10" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-num" x="60" y="66" text-anchor="middle">82.8%</text>
+            </svg>
+          </div>
+        </div>
+        <p class="ring-label">of tracked minutes, sedentary</p>
+        <h3>Movement is the exception, not the norm</h3>
+        <p>Sedentary minutes average 989 a day against just 32 minutes of moderate-to-vigorous activity. Average daily steps sit at 6,538 — and only 17% of members clear the 10,000-step mark even once as an average.</p>
+      </div>
+
+      <div class="insight-card reveal">
+        <span class="roman">II.</span>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#4A2436" stroke-width="10"/>
+              <circle class="ring-fill" data-pct="68.6" cx="60" cy="60" r="50" fill="none" stroke="#E4C88B" stroke-width="10" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-num" x="60" y="66" text-anchor="middle">68.6%</text>
+            </svg>
+          </div>
+        </div>
+        <p class="ring-label">of members logged any sleep</p>
+        <h3>Sleep is good when it's captured — the gap is capture itself</h3>
+        <p>Among the 24 members who logged sleep, efficiency averages 91.2% — only 42 minutes a night spent awake in bed. The story isn't poor sleep. It's that a third of members never logged a night at all.</p>
+      </div>
+
+      <div class="insight-card reveal">
+        <span class="roman">III.</span>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#4A2436" stroke-width="10"/>
+              <circle class="ring-fill" data-pct="40" cx="60" cy="60" r="50" fill="none" stroke="#B6924F" stroke-width="10" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="314" stroke-dashoffset="314"/>
+              <text class="ring-num" x="60" y="66" text-anchor="middle">40%</text>
+            </svg>
+          </div>
+        </div>
+        <p class="ring-label">of members had a zero-step day</p>
+        <h3>Engagement dips are common — and activity still pays off</h3>
+        <p>Steps and calories burned move together with a moderate positive correlation (r ≈ 0.48), so consistent movement measurably shows up in energy spend. But 14 of 35 members had at least one fully untracked, zero-step day — 61 such days in total.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     DATA GAPS
+========================================================= -->
+<section class="gaps" id="gaps">
+  <div class="wrap">
+    <p class="eyebrow reveal">Where the Data Falls Short</p>
+    <h2 class="reveal">Four Areas That Need More Data</h2>
+    <p class="lede reveal">A confident analysis is honest about its blind spots. Here's what I'd ask Bellabeat to collect next, in order of how much it would change the story.</p>
+
+    <div class="gap-list">
+      <div class="gap-item reveal">
+        <svg viewBox="0 0 24 24" stroke="#B6924F" fill="none" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <div>
+          <h4>Incomplete sleep logging</h4>
+          <p>11 of 35 members — 31% — never logged a single night of sleep. Any sleep-related conclusion is built on two-thirds of the population; the rest is a silent gap, not a "zero."</p>
+        </div>
+      </div>
+      <div class="gap-item reveal">
+        <svg viewBox="0 0 24 24" stroke="#B6924F" fill="none" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        <div>
+          <h4>No demographic context</h4>
+          <p>Age, height, weight, and menstrual-cycle phase aren't in this export. Without them, every insight is an average across a population Bellabeat can't yet segment or personalize for.</p>
+        </div>
+      </div>
+      <div class="gap-item reveal">
+        <svg viewBox="0 0 24 24" stroke="#B6924F" fill="none" stroke-width="1.4"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+        <div>
+          <h4>A short observation window</h4>
+          <p>Members were tracked for 8 to 32 days, averaging just 13. That's enough to see a snapshot, not enough to separate a habit from a busy week or a holiday.</p>
+        </div>
+      </div>
+      <div class="gap-item reveal">
+        <svg viewBox="0 0 24 24" stroke="#B6924F" fill="none" stroke-width="1.4"><path d="M12 21s-7-4.6-9.5-9C.7 8.4 2.6 4 7 4c2.2 0 3.8 1.3 5 3 1.2-1.7 2.8-3 5-3 4.4 0 6.3 4.4 4.5 8-2.5 4.4-9.5 9-9.5 9z"/></svg>
+        <div>
+          <h4>No heart rate or stress markers</h4>
+          <p>Resting heart rate, HRV, and stress scores — signals many wearables capture — are absent here, so recovery and strain can only be inferred from steps and sleep, never confirmed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     PREDICTIONS
+========================================================= -->
+<section class="predictions" id="predictions">
+  <div class="wrap">
+    <p class="eyebrow reveal">Looking Ahead</p>
+    <h2 class="reveal">Three Predictions for Bellabeat</h2>
+    <p class="lede reveal">Reasonable, data-grounded forecasts — not guarantees — for what happens if these patterns continue or are acted on.</p>
+
+    <div class="predict-grid">
+      <div class="predict-card reveal">
+        <svg viewBox="0 0 24 24" stroke="#9C6559" fill="none" stroke-width="1.4"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+        <span class="tag">Activity Nudges</span>
+        <h4>Small step gains should show up in calorie burn</h4>
+        <p>Given the steps-to-calories relationship already in the data, a nudge that lifts the average member from ~6,500 to ~8,000 steps a day is likely to register as a measurable, reportable rise in energy expenditure — a believable in-app milestone, not a moonshot.</p>
+      </div>
+      <div class="predict-card reveal">
+        <svg viewBox="0 0 24 24" stroke="#9C6559" fill="none" stroke-width="1.4"><path d="M4 19h16"/><path d="M7 19V9M12 19V5M17 19v12"/></svg>
+        <span class="tag">Retention Signal</span>
+        <h4>Logging gaps will keep tracking engagement, not just sleep</h4>
+        <p>The members who skip sleep logging are, almost by definition, the lighter app users. Expect sleep-logging rate to keep functioning as an early warning sign for churn — worth watching in its own right, separate from actual sleep quality.</p>
+      </div>
+      <div class="predict-card reveal">
+        <svg viewBox="0 0 24 24" stroke="#9C6559" fill="none" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l6 3"/></svg>
+        <span class="tag">Personalization</span>
+        <h4>Filling the demographic gap will unlock real segmentation</h4>
+        <p>Once age, cycle phase, and longer history are collected, I'd expect today's single "average member" story to split into distinct groups — likely with different step, sleep, and recovery norms — each deserving its own guidance rather than one blended target.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     TOOLKIT
+========================================================= -->
+<section class="toolkit">
+  <div class="wrap" style="text-align:center;">
+    <p class="eyebrow reveal">Tools of the Trade</p>
+    <h2 class="reveal">How This Study Was Built</h2>
+    <div class="chip-row reveal">
+      <span class="chip">SQL</span>
+      <span class="chip">Python · Pandas</span>
+      <span class="chip">Excel / Google Sheets</span>
+      <span class="chip">Data Cleaning</span>
+      <span class="chip">Statistical Correlation</span>
+      <span class="chip">Data Visualization</span>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     CONTACT / FOOTER
+========================================================= -->
+<footer id="contact">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-light);">Let's Talk Data</p>
+    <h2>Have a Dataset Worth Reading?</h2>
+    <p class="lede">I'd love to hear about it. Reach out and let's find the story hiding in your numbers.</p>
+    <a href="mailto:hello@example.com" class="btn">hello@example.com</a>
+    <div class="footer-links">
+      <a href="https://github.com/wsmall26" target="_blank" rel="noopener">GitHub</a>
+      <a href="#top">Back to Top</a>
+    </div>
+    <p class="fine">&copy; <span id="year"></span> W. Small — Senior Data Analyst. Bellabeat wellness study, built for portfolio purposes.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Mobile nav toggle
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ links.classList.remove('open'); });
+  });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal on scroll
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.15});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // Animate progress rings
+  var rings = document.querySelectorAll('.ring-fill');
+  var circumference = 2 * Math.PI * 50; // r=50
+
+  function animateRing(el){
+    var pct = parseFloat(el.getAttribute('data-pct')) || 0;
+    var offset = circumference - (circumference * pct / 100);
+    if(reduceMotion){
+      el.style.strokeDashoffset = offset;
+      return;
+    }
+    el.style.transition = 'stroke-dashoffset 1.4s ease-out';
+    requestAnimationFrame(function(){
+      el.style.strokeDashoffset = offset;
+    });
+  }
+
+  if('IntersectionObserver' in window){
+    var ringIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          animateRing(entry.target);
+          ringIo.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.4});
+    rings.forEach(function(r){ ringIo.observe(r); });
+  } else {
+    rings.forEach(animateRing);
+  }
+
+})();
+</script>
+</body>
+</html>
