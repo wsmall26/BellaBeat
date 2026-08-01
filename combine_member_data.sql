@@ -12,7 +12,7 @@
 --    dates      -> DATE (ISO 8601, YYYY-MM-DD)
 --    all numeric aggregates -> NUMERIC / INTEGER as appropriate
 -- ---------------------------------------------------------------------
-
+##
 CREATE TABLE activity_by_member (
     member_id                   BIGINT PRIMARY KEY,
     days_tracked                INTEGER,
